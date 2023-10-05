@@ -6,6 +6,8 @@ Benchmarks::Benchmarks(){
   nonSeparableGroupSize = 50;
   MASK = ((L(1)) << (L(48))) - (L(1));
   m_havenextGaussian = false;
+  partials = NULL;
+  partials_num = 0;
 
   if (dimension<nonSeparableGroupSize){
     cerr<<"ERROR: In configuration file, dimension is smaller than the non-separable part"<<endl;
@@ -154,6 +156,16 @@ double* Benchmarks::createShiftVector(int dim, double min,double max) {
     }
   }
   return(d);
+}
+
+double* Benchmarks::getPartials()
+{
+  return partials;
+}
+
+int Benchmarks::getPartialsNum()
+{
+  return partials_num;
 }
 
 double* Benchmarks::readOvector()

@@ -18,6 +18,14 @@ double eval_sol(double *x) {
     return bench->compute(x);
 }
 
+double* get_partials() {
+    return bench->getPartials();
+}
+
+int get_partials_num() {
+    return bench->getPartialsNum();
+}
+
 void set_data_dir(char *new_data_dir) {
     string data_dir = new_data_dir;
     bench->set_data_dir(data_dir);

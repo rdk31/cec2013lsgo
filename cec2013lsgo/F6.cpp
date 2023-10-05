@@ -8,6 +8,7 @@ F6::F6():Benchmarks(){
   ID = 6;
   s_size = 7;
   anotherz = new double[dimension];
+  partials_num = s_size + 1;
 }
 
 F6::~F6(){
@@ -32,7 +33,10 @@ F6::~F6(){
         delete[] r100;
         delete[] s;
         delete[] w;
-
+  
+  if (partials != NULL) {
+    delete[] partials;
+  }
 }
 
 double F6::compute(double*x){
@@ -49,6 +53,12 @@ double F6::compute(double*x){
     w = readW(s_size);
   }
 
+  if (partials != NULL) {
+    delete[] partials;
+  }
+
+  partials = new double[partials_num];
+
   for(i = 0; i < dimension; i++) {
     anotherz[i] = x[i] - Ovector[i];
   }
@@ -62,7 +72,9 @@ double F6::compute(double*x){
       // cout<<"c="<<c<<", i="<<i<<endl;
       anotherz1 = rotateVector(i, c);
       // cout<<"done rot"<<endl;
-      result += w[i] * ackley(anotherz1, s[i]);
+      double tmp = w[i] * ackley(anotherz1, s[i]);
+      partials[i] = tmp;
+      result += tmp;
       delete []anotherz1;
       // cout<<result<<endl;
     }
@@ -74,7 +86,9 @@ double F6::compute(double*x){
       // cout<<i-c<<" "<<Pvector[i]<<" "<<anotherz[Pvector[i]]<<endl;
       z[i-c] = anotherz[Pvector[i]];
     }
-  result += ackley(z, dimension-c);
+  double t = ackley(z, dimension-c);
+  partials[s_size] = t;
+  result += t;
   delete []z;
 
   update(result);

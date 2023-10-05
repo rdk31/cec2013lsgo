@@ -112,6 +112,9 @@ public:
   double* anotherz1;
   double* anotherz2;
 
+  double *partials;
+  int partials_num;
+
   vector<bool> interArray;
 
   // running time setting for benchmarks
@@ -142,6 +145,8 @@ public:
   int getMinX();
   int getMaxX();
   unsigned getID();
+  double *getPartials();
+  int getPartialsNum();
 
   void setMinX(int);
   void setMaxX(int);

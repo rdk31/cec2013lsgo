@@ -12,6 +12,8 @@ cdef extern from "eval_func.h":
     void set_data_dir(char * new_data_dir)
     void free_func()
     void next_run()
+    double* get_partials()
+    int get_partials_num()
 
 
 import sys
@@ -23,7 +25,7 @@ else:
     def b(x):
         return codecs.latin_1_encode(x)[0]
 
-def _cec2013_test_func(double[::1] x):
+def _cec2013_test_func(double[::1] x, partials=False):
     cdef int dim
     cdef double fitness
     cdef double * sol
@@ -40,6 +42,15 @@ def _cec2013_test_func(double[::1] x):
 
     fitness = eval_sol(sol)
     free(sol)
+
+    if partials:
+        partials = []
+        partials_arr = get_partials()
+        for i in range(get_partials_num()):
+            partials.append(partials_arr[i])
+
+        return fitness, partials
+    
     return fitness
 
 cdef class Benchmark:
