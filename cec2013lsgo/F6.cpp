@@ -1,7 +1,8 @@
 #include "F6.h"
 #include <stdio.h>
 
-F6::F6():Benchmarks(){
+F6::F6() : Benchmarks()
+{
   Ovector = NULL;
   minX = -32;
   maxX = 32;
@@ -11,39 +12,43 @@ F6::F6():Benchmarks(){
   partials_num = s_size + 1;
 }
 
-F6::~F6(){
+F6::~F6()
+{
   delete[] Ovector;
   delete[] Pvector;
-        delete[] anotherz;
-        
-        for (int i = 0; i < 25; ++i)
-          {
-            delete[] r25[i];
-          }
-        for (int i = 0; i < 50; ++i)
-          {
-            delete[] r50[i];
-          }
-        for (int i = 0; i < 100; ++i)
-          {
-            delete[] r100[i];
-          }
-        delete[] r25;
-        delete[] r50;
-        delete[] r100;
-        delete[] s;
-        delete[] w;
-  
-  if (partials != NULL) {
+  delete[] anotherz;
+
+  for (int i = 0; i < 25; ++i)
+  {
+    delete[] r25[i];
+  }
+  for (int i = 0; i < 50; ++i)
+  {
+    delete[] r50[i];
+  }
+  for (int i = 0; i < 100; ++i)
+  {
+    delete[] r100[i];
+  }
+  delete[] r25;
+  delete[] r50;
+  delete[] r100;
+  delete[] s;
+  delete[] w;
+
+  if (partials != NULL)
+  {
     delete[] partials;
   }
 }
 
-double F6::compute(double*x){
-  int    i;
+double F6::compute(double *x)
+{
+  int i;
   double result = 0.0;
 
-  if(Ovector == NULL) {
+  if (Ovector == NULL)
+  {
     Ovector = readOvector();
     Pvector = readPermVector();
     r25 = readR(25);
@@ -53,45 +58,46 @@ double F6::compute(double*x){
     w = readW(s_size);
   }
 
-  if (partials != NULL) {
+  if (partials != NULL)
+  {
     delete[] partials;
   }
 
   partials = new double[partials_num];
 
-  for(i = 0; i < dimension; i++) {
+  for (i = 0; i < dimension; i++)
+  {
     anotherz[i] = x[i] - Ovector[i];
   }
 
   // cout<<"non"<<endl;
-  
+
   // s_size non-separable part with rotation
   int c = 0;
   for (i = 0; i < s_size; i++)
-    {
-      // cout<<"c="<<c<<", i="<<i<<endl;
-      anotherz1 = rotateVector(i, c);
-      // cout<<"done rot"<<endl;
-      double tmp = w[i] * ackley(anotherz1, s[i]);
-      partials[i] = tmp;
-      result += tmp;
-      delete []anotherz1;
-      // cout<<result<<endl;
-    }
-  
+  {
+    // cout<<"c="<<c<<", i="<<i<<endl;
+    anotherz1 = rotateVector(i, c);
+    // cout<<"done rot"<<endl;
+    double tmp = w[i] * ackley(anotherz1, s[i]);
+    partials[i] = tmp;
+    result += tmp;
+    delete[] anotherz1;
+    // cout<<result<<endl;
+  }
+
   // one separable part without rotation
-  double* z = new double[dimension-c];
+  double *z = new double[dimension - c];
   for (i = c; i < dimension; i++)
-    {
-      // cout<<i-c<<" "<<Pvector[i]<<" "<<anotherz[Pvector[i]]<<endl;
-      z[i-c] = anotherz[Pvector[i]];
-    }
-  double t = ackley(z, dimension-c);
+  {
+    // cout<<i-c<<" "<<Pvector[i]<<" "<<anotherz[Pvector[i]]<<endl;
+    z[i - c] = anotherz[Pvector[i]];
+  }
+  double t = ackley(z, dimension - c);
   partials[s_size] = t;
   result += t;
-  delete []z;
+  delete[] z;
 
   update(result);
-  return(result);
+  return (result);
 }
-

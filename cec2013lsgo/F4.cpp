@@ -1,46 +1,55 @@
 #include "F4.h"
 #include <stdio.h>
 
-F4::F4():Benchmarks(){
-	Ovector = NULL;
-	minX = -100;
-	maxX = 100;
-	ID = 4;
-        s_size = 7;
-	// lookup2 = lookupprepare(nonSeparableGroupSize);
-	// lookup = lookupprepare(dimension - nonSeparableGroupSize);
-        anotherz = new double[dimension];
+F4::F4() : Benchmarks()
+{
+  Ovector = NULL;
+  minX = -100;
+  maxX = 100;
+  ID = 4;
+  s_size = 7;
+  // lookup2 = lookupprepare(nonSeparableGroupSize);
+  // lookup = lookupprepare(dimension - nonSeparableGroupSize);
+  anotherz = new double[dimension];
+  partials_num = s_size + 1;
 }
 
-F4::~F4(){
- 	delete[] Ovector;
- 	delete[] Pvector;
-        delete[] anotherz;
-        
-        for (int i = 0; i < 25; ++i)
-          {
-            delete[] r25[i];
-          }
-        for (int i = 0; i < 50; ++i)
-          {
-            delete[] r50[i];
-          }
-        for (int i = 0; i < 100; ++i)
-          {
-            delete[] r100[i];
-          }
-        delete[] r25;
-        delete[] r50;
-        delete[] r100;
-        delete[] s;
-        delete[] w;
+F4::~F4()
+{
+  delete[] Ovector;
+  delete[] Pvector;
+  delete[] anotherz;
+
+  for (int i = 0; i < 25; ++i)
+  {
+    delete[] r25[i];
+  }
+  for (int i = 0; i < 50; ++i)
+  {
+    delete[] r50[i];
+  }
+  for (int i = 0; i < 100; ++i)
+  {
+    delete[] r100[i];
+  }
+  delete[] r25;
+  delete[] r50;
+  delete[] r100;
+  delete[] s;
+  delete[] w;
+  if (partials != NULL)
+  {
+    delete[] partials;
+  }
 }
 
-double F4::compute(double*x){
-  int    i;
+double F4::compute(double *x)
+{
+  int i;
   double result = 0.0;
 
-  if(Ovector == NULL) {
+  if (Ovector == NULL)
+  {
     Ovector = readOvector();
     Pvector = readPermVector();
     r25 = readR(25);
@@ -49,8 +58,16 @@ double F4::compute(double*x){
     s = readS(s_size);
     w = readW(s_size);
   }
-  
-  for(i = 0; i < dimension; i++) {
+
+  if (partials != NULL)
+  {
+    delete[] partials;
+  }
+
+  partials = new double[partials_num];
+
+  for (i = 0; i < dimension; i++)
+  {
     anotherz[i] = x[i] - Ovector[i];
   }
 
@@ -62,37 +79,41 @@ double F4::compute(double*x){
 
   // // T_{osz}
   // transform_osz(anotherz);
-  
+
   // s_size non-separable part with rotation
   int c = 0;
   for (i = 0; i < s_size; i++)
-    {
-      // cout<<"c="<<c<<", i="<<i<<endl;
-      anotherz1 = rotateVector(i, c);
-      // cout<<"done rot"<<endl;
-      result += w[i] * elliptic(anotherz1, s[i]);
-      delete []anotherz1;
-      // cout<<result<<endl;
-    }
-  
+  {
+    // cout<<"c="<<c<<", i="<<i<<endl;
+    anotherz1 = rotateVector(i, c);
+    // cout<<"done rot"<<endl;
+    double tmp = w[i] * elliptic(anotherz1, s[i]);
+    partials[i] = tmp;
+    result += tmp;
+    delete[] anotherz1;
+    // cout<<result<<endl;
+  }
+
   // one separable part without rotation
-  double* z = new double[dimension-c];
+  double *z = new double[dimension - c];
   for (i = c; i < dimension; i++)
-    {
-      // cout<<i-c<<" "<<Pvector[i]<<" "<<anotherz[Pvector[i]]<<endl;
-      z[i-c] = anotherz[Pvector[i]];
-    }
-  
+  {
+    // cout<<i-c<<" "<<Pvector[i]<<" "<<anotherz[Pvector[i]]<<endl;
+    z[i - c] = anotherz[Pvector[i]];
+  }
+
   // cout<<"sep\n"<<elliptic(z, dimension-c)<<endl;
-  
-  result += elliptic(z, dimension-c);
+
+  double t = elliptic(z, dimension - c);
+  partials[s_size] = t;
+  result += t;
   delete[] z;
 
-//  printf("Rotated Part = %1.16E\n", rot_elliptic(anotherz1,nonSeparableGroupSize) * 1e6);
-//  printf("Separable Part = %1.16E\n", elliptic(anotherz2,dimension - nonSeparableGroupSize));
+  //  printf("Rotated Part = %1.16E\n", rot_elliptic(anotherz1,nonSeparableGroupSize) * 1e6);
+  //  printf("Separable Part = %1.16E\n", elliptic(anotherz2,dimension - nonSeparableGroupSize));
 
   update(result);
-  return(result);
+  return (result);
 }
 
 // double F4::compute(vector<double> x){
@@ -118,7 +139,7 @@ double F4::compute(double*x){
 // /*
 // 	  Pvector = (int*)malloc(sizeof(int) * dimension);
 // 	  for (i = 0; i<dimension; i++){
-// 		  Pvector[i] = i;	
+// 		  Pvector[i] = i;
 // 	  }
 // */
 //     RotMatrix = createRotMatrix1D(nonSeparableGroupSize);
