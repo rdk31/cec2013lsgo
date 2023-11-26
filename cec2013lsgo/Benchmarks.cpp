@@ -618,11 +618,14 @@ double *Benchmarks::rotateVectorConform(int i, int &c)
   // printf("i=%d\tc=%d\tl=%d\tu=%d\n", i, c, c - (i)*overlap, c +s[i] - (i)*overlap);
 
   // copy values into the new vector
+
   for (int j = c - i * overlap; j < c + s[i] - i * overlap; ++j)
   {
     // cout<<"j-c "<<j-c<<" p "<<Pvector[j]<<endl;
+    cout << Pvector[j] << " ";
     z[j - (c - i * overlap)] = anotherz[Pvector[j]];
   }
+  cout << endl;
   // cout<<"copy done"<<endl;
   if (s[i] == 25)
   {
@@ -766,7 +769,13 @@ double Benchmarks::rastrigin(double *x, int dim)
 
   for (i = dim - 1; i >= 0; i--)
   {
-    sum += x[i] * x[i] - 10.0 * cos(2 * PI * x[i]) + 10.0;
+    double p = x[i] * x[i] - 10.0 * cos(2 * PI * x[i]) + 10.0;
+
+    if (partials != NULL)
+    {
+      partials[i] = p;
+    }
+    sum += p;
   }
 
   return (sum);
