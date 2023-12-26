@@ -4,11 +4,12 @@ from os import path
 from collections import namedtuple
 from pkg_resources import resource_filename
 from libc.stdlib cimport malloc, free
+from libcpp cimport bool
 import cython
 
 cdef extern from "eval_func.h":
     void set_func(int funid)
-    double eval_sol(double*)
+    double eval_sol(double* x, bool weights)
     void set_data_dir(char * new_data_dir)
     void free_func()
     void next_run()
@@ -25,7 +26,7 @@ else:
     def b(x):
         return codecs.latin_1_encode(x)[0]
 
-def _cec2013_test_func(double[::1] x, partials=False):
+def _cec2013_test_func(double[::1] x, partials=False, simple_weights=False):
     cdef int dim
     cdef double fitness
     cdef double * sol
@@ -40,7 +41,7 @@ def _cec2013_test_func(double[::1] x, partials=False):
     for i in xrange(dim):
         sol[i] = x[i]
 
-    fitness = eval_sol(sol)
+    fitness = eval_sol(sol, simple_weights)
     free(sol)
 
     if partials:

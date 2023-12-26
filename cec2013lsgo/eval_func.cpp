@@ -1,80 +1,121 @@
 #include "Header.h"
 #include <cassert>
 
-static Benchmarks* bench=NULL;
+static Benchmarks *bench = NULL;
 
-Benchmarks* generateFuncObj(int funcID);
+Benchmarks *generateFuncObj(int funcID);
 
-void set_func(int funcID) {
-    bench = generateFuncObj(funcID);
-    bench->nextRun();
+void set_func(int funcID)
+{
+  bench = generateFuncObj(funcID);
+  bench->nextRun();
 }
 
-void next_run() {
-    bench->nextRun();
+void next_run()
+{
+  bench->nextRun();
 }
 
-double eval_sol(double *x) {
-    return bench->compute(x);
+double eval_sol(double *x, bool simpleWeights)
+{
+  bench->simpleWeights = simpleWeights;
+  return bench->compute(x);
 }
 
-double* get_partials() {
-    return bench->getPartials();
+double *get_partials()
+{
+  return bench->getPartials();
 }
 
-int get_partials_num() {
-    return bench->getPartialsNum();
+int get_partials_num()
+{
+  return bench->getPartialsNum();
 }
 
-void set_data_dir(char *new_data_dir) {
-    string data_dir = new_data_dir;
-    bench->set_data_dir(data_dir);
+void set_data_dir(char *new_data_dir)
+{
+  string data_dir = new_data_dir;
+  bench->set_data_dir(data_dir);
 }
 
-void free_func(void) {
-   if (bench) {
-      delete bench;
-   }
+void free_func(void)
+{
+  if (bench)
+  {
+    delete bench;
+  }
 
-   bench = NULL;
+  bench = NULL;
 }
 
 // create new object of class with default setting
-Benchmarks* generateFuncObj(int funcID){
+Benchmarks *generateFuncObj(int funcID)
+{
   Benchmarks *fp;
   // run each of specified function in "configure.ini"
-  if (funcID==1){
+  if (funcID == 1)
+  {
     fp = new F1();
-  }else if (funcID==2){
+  }
+  else if (funcID == 2)
+  {
     fp = new F2();
-  }else if (funcID==3){
+  }
+  else if (funcID == 3)
+  {
     fp = new F3();
-  }else if (funcID==4){
+  }
+  else if (funcID == 4)
+  {
     fp = new F4();
-  }else if (funcID==5){
+  }
+  else if (funcID == 5)
+  {
     fp = new F5();
-  }else if (funcID==6){
+  }
+  else if (funcID == 6)
+  {
     fp = new F6();
-  }else if (funcID==7){
+  }
+  else if (funcID == 7)
+  {
     fp = new F7();
-  }else if (funcID==8){
+  }
+  else if (funcID == 8)
+  {
     fp = new F8();
-  }else if (funcID==9){
+  }
+  else if (funcID == 9)
+  {
     fp = new F9();
-  }else if (funcID==10){
+  }
+  else if (funcID == 10)
+  {
     fp = new F10();
-  }else if (funcID==11){
+  }
+  else if (funcID == 11)
+  {
     fp = new F11();
-  }else if (funcID==12){
+  }
+  else if (funcID == 12)
+  {
     fp = new F12();
-  }else if (funcID==13){
+  }
+  else if (funcID == 13)
+  {
     fp = new F13();
-  }else if (funcID==14){
+  }
+  else if (funcID == 14)
+  {
     fp = new F14();
-  }else if (funcID==15){
+  }
+  else if (funcID == 15)
+  {
     fp = new F15();
-  }else{
-    cerr<<"Fail to locate Specified Function Index"<<endl;
+  }
+  else
+  {
+    cerr << "Fail to locate Specified Function Index" << endl;
     exit(-1);
   }
   return fp;

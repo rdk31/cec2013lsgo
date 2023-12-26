@@ -9,6 +9,7 @@ Benchmarks::Benchmarks()
   m_havenextGaussian = false;
   partials = NULL;
   partials_num = 0;
+  simpleWeights = false;
 
   if (dimension < nonSeparableGroupSize)
   {
