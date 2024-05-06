@@ -623,10 +623,10 @@ double *Benchmarks::rotateVectorConform(int i, int &c)
   for (int j = c - i * overlap; j < c + s[i] - i * overlap; ++j)
   {
     // cout<<"j-c "<<j-c<<" p "<<Pvector[j]<<endl;
-    cout << Pvector[j] << " ";
+    // cout << Pvector[j] << " ";
     z[j - (c - i * overlap)] = anotherz[Pvector[j]];
   }
-  cout << endl;
+  // cout << endl;
   // cout<<"copy done"<<endl;
   if (s[i] == 25)
   {
