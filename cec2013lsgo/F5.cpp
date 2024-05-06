@@ -10,6 +10,7 @@ F5::F5() : Benchmarks()
   s_size = 7;
   anotherz = new double[dimension];
   partials_num = s_size + 1;
+  partials = new double[partials_num];
 }
 
 F5::~F5()
