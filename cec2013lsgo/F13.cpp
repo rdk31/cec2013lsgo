@@ -13,6 +13,7 @@ F13::F13() : Benchmarks()
   overlap = 5;
   anotherz = new double[dimension];
   partials_num = s_size;
+  partials = new double[partials_num];
 }
 
 F13::~F13()
@@ -58,13 +59,6 @@ double F13::compute(double *x)
     s = readS(s_size);
     w = readW(s_size);
   }
-
-  if (partials != NULL)
-  {
-    delete[] partials;
-  }
-
-  partials = new double[partials_num];
 
   for (i = 0; i < dimension; i++)
   {

@@ -10,6 +10,7 @@ F6::F6() : Benchmarks()
   s_size = 7;
   anotherz = new double[dimension];
   partials_num = s_size + 1;
+  partials = new double[partials_num];
 }
 
 F6::~F6()
@@ -57,13 +58,6 @@ double F6::compute(double *x)
     s = readS(s_size);
     w = readW(s_size);
   }
-
-  if (partials != NULL)
-  {
-    delete[] partials;
-  }
-
-  partials = new double[partials_num];
 
   for (i = 0; i < dimension; i++)
   {
